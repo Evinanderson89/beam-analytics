@@ -1,17 +1,21 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
-from urllib.parse import urlencode
 from datetime import datetime
 import logging
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
 app = FastAPI()
+
+@app.get("/")
+async def root():
+    return {"message": "Beam Analytics is running! Use the /track endpoint with UTM parameters."}
 
 @app.get("/track")
 async def track(request: Request):
     params = dict(request.query_params)
     redirect_url = params.pop("redirect", "https://example.com")
     
-    # Optional: log all query params
     log_data = {
         "timestamp": datetime.utcnow().isoformat(),
         "ip": request.client.host,
